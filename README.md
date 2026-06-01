@@ -1,4 +1,4 @@
-# 🤖 SME AI Agent Pipeline
+<img width="1920" height="910" alt="Screenshot 2026-06-01 222837" src="https://github.com/user-attachments/assets/ffc34b83-5d35-463a-9ece-90437765e560" /># 🤖 SME AI Agent Pipeline
 
 A production-ready, cost-optimized AI Agent backend designed specifically for Small and Medium Enterprises (SMEs). This pipeline serves as an API Gateway to handle multi-tenant chatbot interactions, enforce usage quotas, and drastically reduce LLM costs through advanced caching strategies.
 
@@ -26,6 +26,9 @@ A production-ready, cost-optimized AI Agent backend designed specifically for Sm
 3.  **Cache Wrapper (Layer 2):** Evaluates if the shop's Knowledge Base (KB) exceeds 1,024 tokens to utilize Gemini Prompt Caching.
 4.  **Agent Execution:** LangChain processes the user query using the optimized context.
 5.  **Background Logging:** Traces are sent to Langfuse, and `token_usage` is updated asynchronously in Supabase without blocking the API response.
+
+<img width="1920" height="910" alt="Screenshot 2026-06-01 222837" src="https://github.com/user-attachments/assets/a60b29ed-78d0-4c2a-9fd4-7dcaaf88c68e" />
+
 
 ## 🚀 Getting Started
 
