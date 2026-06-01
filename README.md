@@ -1,4 +1,4 @@
-<img width="1920" height="910" alt="Screenshot 2026-06-01 222837" src="https://github.com/user-attachments/assets/ffc34b83-5d35-463a-9ece-90437765e560" /># 🤖 SME AI Agent Pipeline
+# 🤖 SME AI Agent Pipeline
 
 A production-ready, cost-optimized AI Agent backend designed specifically for Small and Medium Enterprises (SMEs). This pipeline serves as an API Gateway to handle multi-tenant chatbot interactions, enforce usage quotas, and drastically reduce LLM costs through advanced caching strategies.
 
