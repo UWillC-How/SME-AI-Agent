@@ -1,14 +1,22 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from app.dependencies import VerifyShop, Verify_jwt_token
-from langfuse.callback import CallbackHandler  # นำเข้าตัวจับตาดูของ Langfuse
+from langfuse.callback import CallbackHandler  
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 
+# 🌟 1. นำเข้าไลบรารีของ Supabase และ Config มาใช้งาน
+from supabase import create_client, Client
+from app.config import settings
+
 router = APIRouter(prefix="/chat", tags=["chat"])
 
+# ประกาศตัวแปรเชื่อมต่อระบบภายนอกทั้งหมดไว้ด้านบน
 langfuse_handler = CallbackHandler()
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+
+# 🌟 2. เปิดประตูล็อกอินฝั่ง Supabase Client
+supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 class chatRequest(BaseModel):
     message: str
@@ -20,19 +28,28 @@ async def chat_endpoint(
     shop_id: str = Depends(VerifyShop),
     user_data: dict = Depends(Verify_jwt_token)
 ):
-    # 1. สร้างโปรมต์ (Prompt)
+    # 1. สร้างโปรมต์และสั่ง AI คิดคำตอบตามปกติ
     prompt = ChatPromptTemplate.from_template("คุณคือผู้ช่วยร้านค้า SME จงตอบคำถามนี้อย่างสุภาพ: {question}")
     chain = prompt | llm
 
-    # 2. สั่งรัน AI พร้อมแนบ Langfuse Callbacks ไปด้วย 🌟
-    # เราสามารถตั้งชื่อโปรเจกต์แชท (trace_name) เพื่อให้ไปแยกดูในเว็บได้ง่ายขึ้น
     response = chain.invoke(
         {"question": payload.message},
         config={
             "callbacks": [langfuse_handler],
-            "run_name": f"SME_Chat_Shop_{shop_id}"  # ตั้งชื่อให้รู้ว่าเป็นของร้านไหน
+            "run_name": f"SME_Chat_Shop_{shop_id}"  
         }
     )
 
-    return {"reply": response.content}
+    # 🌟 3. สั่งเซฟข้อมูลและ Status ลง Supabase ตาราง agent_logs ที่เราสร้างไว้
+    try:
+        supabase_client.table("agent_logs").insert({
+            "shop_id": shop_id,
+            "user_message": payload.message,
+            "ai_reply": response.content,
+            "status": "success" # บันทึกสถานะว่าทำงานสำเร็จ
+        }).execute()
+    except Exception as e:
+        # ดักเผื่อเซฟไม่ผ่าน แอปจะได้ไม่ล่ม แต่พ่นเออร์เรอร์บอกเราใน Log แทน
+        print(f"❌ Supabase Logging Error: {e}")
 
+    return {"reply": response.content}
