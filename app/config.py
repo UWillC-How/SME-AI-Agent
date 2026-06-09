@@ -1,12 +1,18 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    SUPABASE_URL: str = "https://placeholder.supabase.co/"
-    SUPABASE_KEY: str = "placeholder_key"
-    JWT_SECRET: str = "placeholder_secret"
-    ALGORITHM: str = "HS256"
+    # ปรับตรงนี้ให้ดึงค่าจากระบบตรง ๆ โดยไม่ต้องใส่ตัวอย่างหลอกไว้ในโค้ด
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+    JWT_SECRET: str
+    
+    # ดึงค่าโมเดลเสริม (ใส่ค่าเริ่มต้นดักไว้ให้)
+    GOOGLE_API_KEY: str | None = None
+    LANGFUSE_PUBLIC_KEY: str | None = None
+    LANGFUSE_SECRET_KEY: str | None = None
+    LANGFUSE_HOST: str = "https://cloud.langfuse.com"
 
-    class Config:
-        env_file = ".env"
+    # บอกให้ Pydantic รู้ว่าให้ไปอ่านจากไฟล์ .env ในเครื่องได้ด้วยเวลาเทสโลคอล
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 settings = Settings()
