@@ -12,8 +12,15 @@ from app.config import settings
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 # ประกาศตัวแปรเชื่อมต่อระบบภายนอกทั้งหมดไว้ด้านบน
-langfuse_handler = CallbackHandler()
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+langfuse_handler = CallbackHandler(
+    public_key=settings.LANGFUSE_PUBLIC_KEY,
+    secret_key=settings.LANGFUSE_SECRET_KEY,
+    host=settings.LANGFUSE_BASE_URL,
+)
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    google_api_key=settings.GEMINI_API_KEY,
+)
 
 # 🌟 2. เปิดประตูล็อกอินฝั่ง Supabase Client
 supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
