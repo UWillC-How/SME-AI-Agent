@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -13,6 +14,12 @@ class Settings(BaseSettings):
     LANGFUSE_PUBLIC_KEY: str | None = None
     LANGFUSE_SECRET_KEY: str | None = None
     LANGFUSE_BASE_URL: str = "https://cloud.langfuse.com"
+
+    # ตัด trailing slash จาก URL โดยอัตโนมัติ เพื่อป้องกัน double-slash ที่ทำให้ Supabase ปฏิเสธ API key
+    @field_validator("SUPABASE_URL", "LANGFUSE_BASE_URL", mode="before")
+    @classmethod
+    def strip_trailing_slash(cls, v: str) -> str:
+        return v.rstrip("/") if isinstance(v, str) else v
 
     # บอกให้ Pydantic รู้ว่าให้ไปอ่านจากไฟล์ .env ในเครื่องได้ด้วยเวลาเทสโลคอล
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
