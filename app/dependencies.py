@@ -15,11 +15,11 @@ async def Verify_jwt_token(authorization: Annotated[str | None, Header(alias = "
         raise HTTPException(status_code=401, detail="Authorization header is required")
     
     try:
-        token_type, token = authorization.split(" ")
+        token_type, token = authorization.split(" ", 1)
         if token_type.lower() != "bearer":
             raise HTTPException(status_code=401, detail="Invalid token type")
         
-        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
 
         return payload
     except (ValueError, JWTError):
