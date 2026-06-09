@@ -12,6 +12,9 @@ app.add_middleware(
     allow_credentials=True
 )
 
+app.include_router(chat.router)
+app.include_router(webhook.router)
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
