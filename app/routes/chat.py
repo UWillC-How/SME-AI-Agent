@@ -25,8 +25,8 @@ llm = ChatGoogleGenerativeAI(
 # 🌟 2. เปิดประตูล็อกอินฝั่ง Supabase Client
 # ใส่ URL และ Key จริงจากเว็บ Supabase ของคุณลงไปดื้อๆ แบบนี้เลยครับ
 supabase_client: Client = create_client(
-    "https://mihtnzzfnzbaqivspicc.supabase.co/rest/v1/", 
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1paHRuenpmbnpiYXFpdnNwaWNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NzU5OTIsImV4cCI6MjA5NjQ1MTk5Mn0.Klcn7yYGeYzFDJKnwqeAcpmv3nzW7B3PeyrfX-OLoSA"
+    settings.SUPABASE_URL,
+    settings.SUPABASE_KEY
 )
 class chatRequest(BaseModel):
     message: str

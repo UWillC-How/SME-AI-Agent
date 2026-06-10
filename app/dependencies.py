@@ -10,12 +10,12 @@ async def VerifyShop(x_shop_id: Annotated[str | None, Header(alias="X-Shop-ID")]
     
     return x_shop_id
 
-async def Verify_jwt_token(authorization: Annotated[str | None, Header(alias = "Authorization")]= None):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Authorization header is required")
+async def Verify_jwt_token(auth_header: Annotated[str | None, Header(alias = "Auth_header")]= None):
+    if not auth_header:
+        raise HTTPException(status_code=401, detail="Auth_header header is required")
     
     try:
-        token_type, token = authorization.split(" ", 1)
+        token_type, token = auth_header.split(" ", 1)
         if token_type.lower() != "bearer":
             raise HTTPException(status_code=401, detail="Invalid token type")
         
