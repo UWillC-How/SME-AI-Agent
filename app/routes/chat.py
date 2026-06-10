@@ -38,6 +38,7 @@ async def chat_endpoint(
     shop_id: str = Depends(VerifyShop),
     user_data: dict = Depends(Verify_jwt_token)
 ):
+    
     # 1. สร้างโปรมต์และสั่ง AI คิดคำตอบตามปกติ
     prompt = ChatPromptTemplate.from_template("คุณคือผู้ช่วยร้านค้า SME จงตอบคำถามนี้อย่างสุภาพ: {question}")
     chain = prompt | llm
@@ -63,3 +64,17 @@ async def chat_endpoint(
         print(f"❌ Supabase Logging Error: {e}")
 
     return {"reply": response.content}
+
+@router.get("/logs")
+async def get_logs(
+    shop_id: str = Depends(VerifyShop)
+):
+    result = (
+        supabase_client
+        .table("agent_logs")
+        .select("*")
+        .eq("shop_id", shop_id)
+        .execute()
+    )
+
+    return result.data
