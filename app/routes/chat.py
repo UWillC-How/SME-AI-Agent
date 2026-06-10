@@ -23,7 +23,7 @@ llm = ChatGoogleGenerativeAI(
 )
 
 # 🌟 2. เปิดประตูล็อกอินฝั่ง Supabase Client
-supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY)
 
 class chatRequest(BaseModel):
     message: str
